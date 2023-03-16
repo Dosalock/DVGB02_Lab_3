@@ -73,12 +73,12 @@ void rtupdate0(struct rtpkt *rcvdpkt) {
     for (int i = 0; i < NODES; i++) {
         temp.costs[sourceid][i] = rcvdpkt->mincost[i];
     }
-        dt0.costs[2][1] = dt0.costs[1][1] + temp.costs[2][1];
-        dt0.costs[1][2] = dt0.costs[2][2] + temp.costs[2][1];
-        dt0.costs[3][2] = dt0.costs[2][2] + temp.costs[2][3];
-        dt0.costs[2][3] = dt0.costs[3][3] + temp.costs[2][3];
-        dt0.costs[1][3] = dt0.costs[3][3] + temp.costs[3][2] + temp.costs[2][1];
-        dt0.costs[3][1] = dt0.costs[1][1] + temp.costs[3][2] + temp.costs[2][1];
+    dt0.costs[2][1] = dt0.costs[1][1] + temp.costs[2][1];
+    dt0.costs[1][2] = dt0.costs[2][2] + temp.costs[2][1];
+    dt0.costs[3][2] = dt0.costs[2][2] + temp.costs[2][3];
+    dt0.costs[2][3] = dt0.costs[3][3] + temp.costs[2][3];
+    dt0.costs[1][3] = dt0.costs[3][3] + temp.costs[3][2] + temp.costs[2][1];
+    dt0.costs[3][1] = dt0.costs[1][1] + temp.costs[3][2] + temp.costs[2][1];
         /*
     if (sourceid == 1){
         
@@ -93,7 +93,7 @@ void rtupdate0(struct rtpkt *rcvdpkt) {
         dt0.costs[1][3] = dt0.costs[3][3] + rcvdpkt->mincost[2] + 1;
         dt0.costs[3][1] = dt0.costs[1][1] + rcvdpkt->mincost[2] + 1;
     }*/
-    printdt0(&dt0);
+    //printdt0(&dt0);
 }
 
 

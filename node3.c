@@ -10,7 +10,7 @@ extern int NO;
 
 struct distance_table {
   int costs[4][4];
-} dt3;
+} dt3, temp3;
 
 void printdt3(struct distance_table *dtptr);
 
@@ -60,31 +60,17 @@ void rtupdate3(struct rtpkt *rcvdpkt) {
   int sourceid = rcvdpkt->sourceid;
 
     /* Update the distance table with new mincost from the received packet */
-    /*for (int i = 0; i < NODES; i++) {
-        dt3.costs[i][sourceid] = rcvdpkt->mincost[i];
-    }*/
-
-    /* Calculate the new minimum cost to each node */
-    int mincost[NODES];
     for (int i = 0; i < NODES; i++) {
-        mincost[i] = rcvdpkt->mincost[i];
-        for (int j = 0; j < NODES; j++) {
-            mincost[i] = min(mincost[i], dt3.costs[i][j]);
-        }
+        temp3.costs[sourceid][i] = rcvdpkt->mincost[i];
     }
 
-    /* Update the distance table and send distance vector to other nodes if there is a change in the minimum cost */
-    int is_updated = 0;
-    for (int i = 0; i < NODES; i++) {
-        int newcost = mincost[sourceid] + dt3.costs[i][sourceid];
-        if (newcost < dt3.costs[i][sourceid]) {
-            dt3.costs[i][sourceid] = newcost;
-            is_updated = 1;
-        }
-    }
-    if (is_updated  && sourceid != 3) {
-        send_pkt();
-    }
+    dt3.costs[0][2] = dt3.costs[2][2] + temp3.costs[2][0];
+    dt3.costs[1][0] = dt3.costs[0][0] + temp3.costs[0][1];
+    dt3.costs[2][0] = dt3.costs[0][0] + temp3.costs[0][2];
+    dt3.costs[1][2] = dt3.costs[2][2] + temp3.costs[2][1];
+
+    //måste ske lite magi på [1][0]
+    printdt3(&dt3);
 }
 
 void printdt3(struct distance_table *dtptr) {

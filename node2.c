@@ -10,7 +10,7 @@ extern int NO;
 
 struct distance_table {
   int costs[4][4];
-} dt2;
+} dt2, temp2;
 
 void printdt2(struct distance_table *dtptr);
 
@@ -59,43 +59,25 @@ void rtupdate2(struct rtpkt *rcvdpkt) {
   int sourceid = rcvdpkt->sourceid;
 
     /* Update the distance table with new mincost from the received packet */
-    /*for (int i = 0; i < NODES; i++) {
-        dt2.costs[i][sourceid]= rcvdpkt->mincost[i];
-    }*/
-
-    /* Calculate the new minimum cost to each node */
-    int mincost[NODES];
     for (int i = 0; i < NODES; i++) {
-        mincost[i] = rcvdpkt->mincost[i];
-        for (int j = 0; j < NODES; j++) {
-            mincost[i] = min(mincost[i], dt2.costs[i][j]);
-        }
+        temp2.costs[sourceid][i] = rcvdpkt->mincost[i];
     }
 
-    /* Update the distance table and send distance vector to other nodes if there is a change in the minimum cost */
-    int is_updated = 0;
-    for (int i = 0; i < NODES; i++) {
-        int newcost = mincost[sourceid] + dt2.costs[i][sourceid];
-        if (newcost < dt2.costs[i][sourceid]) {
-            dt2.costs[i][sourceid] = newcost;
-            is_updated = 1;
-        }
-    }
-    if (is_updated  && sourceid != 2) {
-        send_pkt();
-    }
+    dt2.costs[0][1] = dt2.costs[1][1] + temp2.costs[1][0];
+    dt2.costs[0][3] = dt2.costs[3][3] + temp2.costs[3][0];
+    dt2.costs[1][0] = dt2.costs[0][0] + temp2.costs[0][1];
+    dt2.costs[3][0] = dt2.costs[0][0] + temp2.costs[0][3];
+    dt2.costs[3][1] = dt2.costs[1][1] + temp2.costs[1][3];
+    
 }
 
 void printdt2(struct distance_table *dtptr) {
   printf("                via     \n");
   printf("   D2 |    0     1    3 \n");
   printf("  ----|-----------------\n");
-  printf("     0|  %3d   %3d   %3d\n",dtptr->costs[0][0],
-	 dtptr->costs[0][1],dtptr->costs[0][3]);
-  printf("dest 1|  %3d   %3d   %3d\n",dtptr->costs[1][0],
-	 dtptr->costs[1][1],dtptr->costs[1][3]);
-  printf("     3|  %3d   %3d   %3d\n",dtptr->costs[3][0],
-	 dtptr->costs[3][1],dtptr->costs[3][3]);
+  printf("     0|  %3d   %3d   %3d\n",dtptr->costs[0][0], dtptr->costs[0][1],dtptr->costs[0][3]);
+  printf("dest 1|  %3d   %3d   %3d\n",dtptr->costs[1][0], dtptr->costs[1][1],dtptr->costs[1][3]);
+  printf("     3|  %3d   %3d   %3d\n",dtptr->costs[3][0], dtptr->costs[3][1],dtptr->costs[3][3]);
 }
 
 
