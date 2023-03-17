@@ -48,7 +48,7 @@ void rtinit0() {
         dt0.costs[i][j] = 999;
         } 
   } 
-    //dt0.costs[0][0] = 0;
+    dt0.costs[0][0] = 0;
     dt0.costs[1][1] = 1;
     dt0.costs[2][2] = 3;
     dt0.costs[3][3] = 7;
@@ -73,27 +73,29 @@ void rtupdate0(struct rtpkt *rcvdpkt) {
     for (int i = 0; i < NODES; i++) {
         temp.costs[sourceid][i] = rcvdpkt->mincost[i];
     }
-    dt0.costs[2][1] = dt0.costs[1][1] + temp.costs[2][1];
-    dt0.costs[1][2] = dt0.costs[2][2] + temp.costs[2][1];
-    dt0.costs[3][2] = dt0.costs[2][2] + temp.costs[2][3];
-    dt0.costs[2][3] = dt0.costs[3][3] + temp.costs[2][3];
-    dt0.costs[1][3] = dt0.costs[3][3] + temp.costs[3][2] + temp.costs[2][1];
-    dt0.costs[3][1] = dt0.costs[1][1] + temp.costs[3][2] + temp.costs[2][1];
-        /*
-    if (sourceid == 1){
-        
+    int changed = 0;
+
+    /* Compute new distance estimates based on received mincosts */
+    for (int dest = 0; dest < NODES; dest++) {
+        if (dest == 0) {
+            continue;  // don't need to update distance to self
+        }
+        int min_cost = 999;
+        for (int via = 0; via < NODES; via++) {
+            int cost = dt0.costs[via][dest] + temp.costs[sourceid][via];
+            if (cost < min_cost) {
+                min_cost = cost;
+            }
+        }
+        if (min_cost != dt0.costs[sourceid][dest]) {
+            dt0.costs[sourceid][dest] = min_cost;
+            changed = 1;
+        }
     }
-    if (sourceid == 2){
-        dt0.costs[2][1] = dt0.costs[1][1] + rcvdpkt->mincost[1];
-        dt0.costs[1][2] = dt0.costs[2][2] + rcvdpkt->mincost[1];
-        dt0.costs[3][2] = dt0.costs[2][2] + rcvdpkt->mincost[3];
-        dt0.costs[2][3] = dt0.costs[3][3] + rcvdpkt->mincost[3];
-    } 
-    if (sourceid == 3){
-        dt0.costs[1][3] = dt0.costs[3][3] + rcvdpkt->mincost[2] + 1;
-        dt0.costs[3][1] = dt0.costs[1][1] + rcvdpkt->mincost[2] + 1;
-    }*/
-    //printdt0(&dt0);
+    if (changed) {
+        send_pkt();
+        printdt0(&dt0);
+    }
 }
 
 
