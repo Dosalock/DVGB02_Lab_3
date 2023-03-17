@@ -54,19 +54,20 @@ void rtinit1() {
 }
 
 void rtupdate1(struct rtpkt *rcvdpkt) {
-    /* TODO */
-    int sourceid = rcvdpkt->sourceid;
+  /* TODO */
+  int sourceid = rcvdpkt->sourceid;
 
-    /* Update the distance table with new mincost from the received packet */
-    for (int i = 0; i < NODES; i++) {
-        temp1.costs[sourceid][i] = rcvdpkt->mincost[i];
-    }
+  /* Update the distance table with new mincost from the received packet */
+  for (int i = 0; i < NODES; i++) {
+      temp1.costs[sourceid][i] = rcvdpkt->mincost[i];
+  }
 
-    dt1.costs[2][0] = dt1.costs[2][2] + temp1.costs[2][3];
-    dt1.costs[0][2] = dt1.costs[0][0] + temp1.costs[0][2];
-    dt1.costs[3][0] = dt1.costs[0][0] + temp1.costs[0][3];
-    dt1.costs[3][2] = dt1.costs[2][2] + temp1.costs[2][3];
- 
+  dt1.costs[2][0] = dt1.costs[2][2] + temp1.costs[0][2];
+  dt1.costs[0][2] = dt1.costs[0][0] + temp1.costs[0][2];
+  dt1.costs[3][0] = dt1.costs[0][0] + temp1.costs[0][3];
+  dt1.costs[3][2] = dt1.costs[2][2] + temp1.costs[2][3];
+
+  printdt1(&dt1);
 }
 
 void printdt1(struct distance_table *dtptr) {

@@ -67,7 +67,10 @@ void rtupdate2(struct rtpkt *rcvdpkt) {
     dt2.costs[0][3] = dt2.costs[3][3] + temp2.costs[3][0];
     dt2.costs[1][0] = dt2.costs[0][0] + temp2.costs[0][1];
     dt2.costs[3][0] = dt2.costs[0][0] + temp2.costs[0][3];
-    dt2.costs[3][1] = dt2.costs[1][1] + temp2.costs[1][3];
+    dt2.costs[3][1] = dt2.costs[1][1] + temp2.costs[1][0] + temp2.costs[0][3];
+    dt2.costs[1][3] = dt2.costs[3][3] + temp2.costs[3][0] + temp2.costs[0][1];
+
+    //printdt2(&dt2);
     
 }
 

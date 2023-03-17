@@ -69,8 +69,7 @@ void rtupdate3(struct rtpkt *rcvdpkt) {
     dt3.costs[2][0] = dt3.costs[0][0] + temp3.costs[0][2];
     dt3.costs[1][2] = dt3.costs[2][2] + temp3.costs[2][1];
 
-    //måste ske lite magi på [1][0]
-    printdt3(&dt3);
+    //printdt3(&dt3);
 }
 
 void printdt3(struct distance_table *dtptr) {
